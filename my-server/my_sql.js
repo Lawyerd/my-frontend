@@ -126,7 +126,6 @@ post.find_by_id = async function (post_id) {
   try {
     rows = await query(`select * from post where id = ${post_id}`);
     console.log(`Find ${post_id}'st post from post DB`);
-    console.log(rows);
     return rows[0];
     // connection.end();
     // console.log(rows);
@@ -145,6 +144,26 @@ post.find_all = async function () {
   } catch (err) {
     console.log(err);
     return undefined;
+  }
+};
+
+post.hit = async function (post_id) {
+  try {
+    await query(`update post set hit = hit+ 1 where id = ${post_id}`);
+    console.log("hit!");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+post.delete = async function (post_id) {
+  console.log(post_id);
+  try {
+    await connection.query(`Delete From post Where id = ${post_id}`);
+    console.log(`Delete ${post_id} post from post DB`);
+    // insert data into example table
+  } catch (e) {
+    // console.log(e);
   }
 };
 

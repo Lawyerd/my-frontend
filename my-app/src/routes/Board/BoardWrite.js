@@ -11,39 +11,27 @@ import base_url from "../../data/base_url.js";
 
 function BoardWrite() {
   const editorRef = useRef();
-  const titleRef = useRef();
 
-  const [cookies, setCookie, removeCookie] = useCookies(["post"]);
+  const [cookies] = useCookies(["post"]);
   const [isSubmit, setIsSubmit] = useState(false);
   const [title, setTitle] = useState("");
   const [section, setSection] = useState("");
   const btnClickListener = async () => {
-    console.log(titleRef);
     const editorInstance = editorRef.current.getInstance();
-
-    const getContent_md = editorInstance.getMarkdown();
-    console.log("--Mark Down");
-    console.log(getContent_md);
     const getContent_html = editorInstance.getHtml();
-    console.log("--HTML--");
-    console.log(getContent_html);
-    removeCookie("post");
-    setCookie("post", getContent_html);
-    console.log(cookies);
-    console.log(cookies.user.id);
+    console.log("h0");
 
-    await send_data({
+    await axios.post(base_url + "/post/create", {
       content: getContent_html,
       section: section,
       title: title,
       author_id: cookies.user.id,
       author: cookies.user.name,
     });
+    console.log("h1");
     setIsSubmit(true);
   };
-  async function send_data(data) {
-    await axios.post(base_url + "/post/create", data);
-  }
+
   const handleChange = event => {
     var { name } = event.target;
     var { value } = event.target;
@@ -55,7 +43,10 @@ function BoardWrite() {
     }
   };
 
-  if (isSubmit) return <Redirect to={"/board"} />;
+  if (isSubmit) {
+    console.log("ho");
+    return <Redirect to={"/board"} />;
+  }
 
   return (
     <Card>
@@ -98,13 +89,17 @@ function BoardWrite() {
               name="section"
               onChange={handleChange}
             >
-              <option value="item" key="item"></option>
-              <option value="user" key="user"></option>
+              <option value="item" key="item">
+                item
+              </option>
+              <option value="user" key="user">
+                user
+              </option>
             </select>
           </div>
           <Editor
             placeholder="Please enter text."
-            previewStyle="tab"
+            previewStyle="vertical"
             initialEditType="markdown"
             useCommandShortcut={true}
             ref={editorRef}
