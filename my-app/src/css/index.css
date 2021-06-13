@@ -23,6 +23,15 @@ p {
   font-family:'Apple_Text';  
 }
 
+.row{
+  margin: 0px;
+}
+
+
+.col{
+  margin: 0px;
+}
+
 h1{
   font-family:'Apple_Display';
 }

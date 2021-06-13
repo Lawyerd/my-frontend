@@ -12,8 +12,8 @@ function Profile() {
 
   useEffect(() => {
     const get_data = async page => {
-      const res_data = await axios.get(base_url + `/user/${page}`);
-      const data = res_data.data[0];
+      const res = await axios.get(base_url + `/user/${page}`);
+      const data = res.data;
       data.password = "";
       setUser(data);
     };

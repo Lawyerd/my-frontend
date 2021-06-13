@@ -46,6 +46,9 @@ function Header() {
           <Nav.Link as={Link} to="/">
             Home
           </Nav.Link>
+          <Nav.Link as={Link} to="/board">
+            Forum
+          </Nav.Link>
           <Nav.Link as={Link} to="/admin">
             Admin
           </Nav.Link>

@@ -9,6 +9,7 @@ import Login from "./Auth/Login.js";
 import SignUp from "./Auth/SignUp.js";
 import Profile from "./Profile.js";
 import Oauth from "./Auth/Oauth.js";
+import NotFound from "./Auth/NotFound";
 import BoardRouter from "./Board/BoardRouter.js";
 import AdminRouter from "./Admin/AdminRouter.js";
 
@@ -24,6 +25,8 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/signup" component={SignUp} />
           <Route path="/oauth" component={Oauth} />
+          <Route path="/notfound" component={NotFound} />
+
           <AuthRoute
             auth={["user", "user_kakao", "admin"]}
             path="/board"
