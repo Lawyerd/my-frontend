@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const { db_user } = require("../my_sql.js");
+const { db_user, db_basic } = require("../my_sql.js");
 
 router.post("/create", create_user);
 router.post("/update/:pageID", update_user);
@@ -17,32 +17,33 @@ async function update_user(req, res) {
 }
 
 async function delete_user(req, res) {
-  await db_user.remove(req.body);
+  try {
+    await db_basic.delete("user", "id", req.body.id);
+  } catch (e) {}
 }
 
 async function pages(req, res, next) {
-  var pages = await db_user.get_all();
-  res.send(pages);
+  try {
+    const users = await db_basic.select("user", "*");
+    res.send(users);
+  } catch (e) {}
 }
 
 async function page(req, res, next) {
   const user_id = req.params.pageID;
-  console.log(user_id);
   if (user_id !== "favicon.ico") {
-    const user = await db_user.find_by_id(user_id);
-    if (isEmptyArr(user)) {
-      res.redirect("/");
-    } else {
-      res.send(user);
+    try {
+      const users = await db_basic.select("user", "id", user_id);
+      if (users[0] === undefined) {
+        res.redirect("/");
+      } else {
+        res.send(users[0]);
+      }
+    } catch (err) {
+      console.log(err);
+      res.send("error");
     }
   }
-}
-
-function isEmptyArr(arr) {
-  if (Array.isArray(arr) && arr.length === 0) {
-    return true;
-  }
-  return false;
 }
 
 module.exports = router;

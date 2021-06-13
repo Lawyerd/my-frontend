@@ -20,15 +20,12 @@ function User_list() {
     birth: "",
   });
   const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    get_users();
-  }, []);
-  const get_users = async () => {
-    var data = await axios.get(base_url + "/user/all");
-    setUsers(data.data);
-    setIsLoading(false);
-  }; // getMovies라는 함수 정의
   const [next, setNext] = useState(-1);
+  useEffect(async () => {
+    var res = await axios.get(base_url + "/user/all");
+    setUsers(res.data);
+    setIsLoading(false);
+  }, []);
 
   const handleClick = e => {
     // const clicked_cell = e.nativeEvent.target.innerText;

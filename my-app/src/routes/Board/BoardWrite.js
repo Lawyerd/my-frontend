@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useCookies } from "react-cookie";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
 import "codemirror/lib/codemirror.css";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -19,8 +19,6 @@ function BoardWrite() {
   const btnClickListener = async () => {
     const editorInstance = editorRef.current.getInstance();
     const getContent_html = editorInstance.getHtml();
-    console.log("h0");
-
     await axios.post(base_url + "/post/create", {
       content: getContent_html,
       section: section,
@@ -28,7 +26,6 @@ function BoardWrite() {
       author_id: cookies.user.id,
       author: cookies.user.name,
     });
-    console.log("h1");
     setIsSubmit(true);
   };
 
@@ -44,7 +41,6 @@ function BoardWrite() {
   };
 
   if (isSubmit) {
-    console.log("ho");
     return <Redirect to={"/board"} />;
   }
 
@@ -113,6 +109,9 @@ function BoardWrite() {
           style={{ marginTop: "10px" }}
         >
           <ButtonGroup size="sm">
+            <Link to={"../"}>
+              <Button variant="dark">Back</Button>
+            </Link>
             <Button variant="dark" onClick={btnClickListener}>
               Submit
             </Button>

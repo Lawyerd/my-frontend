@@ -1,6 +1,6 @@
 const passport = require("passport");
 var KakaoStrategy = require("passport-kakao").Strategy;
-const { db_user } = require("../my_sql.js");
+const { db_user, db_basic } = require("../my_sql.js");
 var isEmptyArr = require("../util/isEmtyArr");
 
 module.exports = () => {
@@ -13,33 +13,17 @@ module.exports = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         const profile_email = profile._json.kakao_account.email;
-        const user = await db_user.find_by_email(profile_email);
-        // console.log(user);
-        if (!isEmptyArr(user)) {
+        const users = await db_basic.select("user", "email", profile_email);
+        // console.log(users);
+        if (!isEmptyArr(users)) {
           const sanitize_user = {
-            id: user[0].id,
-            authority: user[0].authority,
-            name: user[0].name,
-            email: user[0].email,
+            id: users[0].id,
+            authority: users[0].authority,
+            name: users[0].name,
+            email: users[0].email,
             accessToken: accessToken,
           };
           return done(null, sanitize_user); // 검증 성공
-          // console.log(user[0]);
-          // hasher(
-          //   { password: password, salt: user[0].salt },
-          //   (error, password, salt, hash) => {
-          //     if (hash === user[0].password) {
-          //       const sanitize_user = {
-          //         id: user[0].id,
-          //         authority: user[0].authority,
-          //         name: user[0].name,
-          //         email: user[0].email,
-          //       };
-          //       return done(null, sanitize_user); // 검증 성공
-          //     }
-          //     return done(null, false, { message: "비밀번호가 틀렸습니다" });
-          //   }
-          // );
         } else {
           const new_user = {
             id: profile._json.id,

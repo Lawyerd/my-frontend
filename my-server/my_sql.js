@@ -15,33 +15,33 @@ const connection = mysql.createConnection({
 const query = util.promisify(connection.query).bind(connection);
 const user = {};
 const post = {};
+const basic = {};
 
-user.find_by_id = async function (user_id) {
-  let rows = [];
+basic.select = async function (from, where, target) {
+  console.log(from, where, target);
   try {
-    rows = await query(`select * from user  where id = ${user_id}`);
-    console.log(`Get ${user_id} user's detail from user DB`);
-    console.log(rows);
-    return rows;
-    // connection.end();
-    // console.log(rows);
+    if (where === "*") {
+      let rows = await query(`select * from ${from}`);
+      console.log(`Select * from [${from}]`);
+      return rows;
+    } else {
+      let rows = await query(
+        `select * from ${from} where ${where} = '${target}'`
+      );
+      console.log(`Select [${where}] = [${target}] from [${from}] table`);
+      return rows;
+    }
   } catch (err) {
     console.log(err);
     return undefined;
   }
 };
 
-user.get_all = async function () {
-  console.log("Getting all data...");
-  let rows = [];
+basic.delete = async function (from, where, target) {
   try {
-    rows = await query(`select * from user`);
-    console.log("Get all users");
-    return rows;
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  }
+    await connection.query(`Delete From ${from} Where ${where} = ${target}`);
+    console.log(`Delete [${where}]=[${target}] from [${from}] table`);
+  } catch (e) {}
 };
 
 user.create = async function (data) {
@@ -81,36 +81,10 @@ user.update = async function (data) {
   });
 };
 
-user.remove = async function (data) {
-  const id = data.id;
-  try {
-    await connection.query(`Delete From user Where id = ${id}`);
-    console.log(`Delete ${id} : ${data.name} from user DB`);
-    // insert data into example table
-  } catch (e) {
-    // console.log(e);
-  }
-};
-
-user.find_by_email = async function (email) {
-  try {
-    console.log(`Searching Whose email = '${email}' from user DB`);
-    // console.log(target_user);
-    const target_user = await query(
-      `select * from user  where email = '${email}'`
-    );
-    return target_user;
-  } catch (e) {
-    // console.log(e);
-  }
-};
-
 post.create = async function (data) {
   console.log("trying to create new post");
-  console.log(data);
-  let thisnow = moment();
-  created_time = thisnow.format("YYYY-MM-DD HH:mm:ss");
-  console.log(`created time is ${created_time}`);
+  let now = moment();
+  created_time = now.format("YYYY-MM-DD HH:mm:ss");
   data.created = created_time;
   console.log(data);
   try {
@@ -119,53 +93,15 @@ post.create = async function (data) {
   } catch (e) {}
 };
 
-post.find_by_id = async function (post_id) {
-  console.log("find_by_id");
-
-  let rows = [];
-  try {
-    rows = await query(`select * from post where id = ${post_id}`);
-    console.log(`Find ${post_id}'st post from post DB`);
-    return rows[0];
-    // connection.end();
-    // console.log(rows);
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  }
-};
-
-post.find_all = async function () {
-  console.log("Getting all data...");
-  let rows = [];
-  try {
-    rows = await query(`select * from post`);
-    return rows;
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  }
-};
-
 post.hit = async function (post_id) {
   try {
-    await query(`update post set hit = hit+ 1 where id = ${post_id}`);
-    console.log("hit!");
+    await query(`Update post set hit = hit+ 1 where id = ${post_id}`);
+    console.log(`Update [post] set [hit] = [hit+ 1] where [id] = [${post_id}]`);
   } catch (err) {
     console.log(err);
-  }
-};
-
-post.delete = async function (post_id) {
-  console.log(post_id);
-  try {
-    await connection.query(`Delete From post Where id = ${post_id}`);
-    console.log(`Delete ${post_id} post from post DB`);
-    // insert data into example table
-  } catch (e) {
-    // console.log(e);
   }
 };
 
 exports.db_user = user;
 exports.db_post = post;
+exports.db_basic = basic;

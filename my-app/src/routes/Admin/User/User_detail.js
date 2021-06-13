@@ -6,10 +6,9 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import base_url from "../../../data/base_url.js";
 
-function User_detail(params) {
-  const [page, setPage] = useState(0);
+function User_detail({ match }) {
   const [isLoading, setIsLoading] = useState(true);
-
+  const page = match.params.id === undefined ? 0 : match.params.id;
   const [values, setValues] = useState({
     id: "",
     name: "",
@@ -20,11 +19,6 @@ function User_detail(params) {
     birth: "",
   });
   const [deleted, setDeleted] = useState(false);
-  const get_data = useCallback(async () => {
-    const user_data = await axios.get(base_url + `/user/${page}`);
-    const user = user_data.data[0];
-    setValues(user);
-  }, [page]);
   const handleClick = () => {
     if (window.confirm(`Delete ${values.name}?`)) {
       axios({
@@ -35,24 +29,17 @@ function User_detail(params) {
       setDeleted(true);
     }
   };
-  useEffect(() => {
-    if (params.match.params.id !== undefined) {
-      setPage(params.match.params.id);
-    }
-  }, [params.match.params.id]);
-  useEffect(() => {
+  useEffect(async () => {
     if (page !== 0) {
-      get_data(page);
+      const req = await axios.get(base_url + `/user/${page}`);
+      const user = req.data;
+      setValues(user);
       setIsLoading(false);
     }
-  }, [page, get_data]);
+  }, []);
 
   if (deleted) {
     return <Redirect to={"/admin/user"} />;
-  }
-
-  if (params.match.params.id === "create") {
-    return <></>;
   }
 
   return (

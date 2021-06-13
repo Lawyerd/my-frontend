@@ -3,14 +3,10 @@ import { Route, Redirect } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
 function AuthRoute({ auth: license, component: Component, render, ...rest }) {
-  console.log("Allow member : ");
-  console.log(license);
   const [cookies] = useCookies(["user"]);
   let auth = "";
   if (cookies.user !== undefined) {
     auth = cookies.user.authority;
-    console.log("This user's authority is : ");
-    console.log(auth);
   }
   function id_verification(license) {
     for (var i = 0; i < license.length; i++) {
@@ -18,6 +14,7 @@ function AuthRoute({ auth: license, component: Component, render, ...rest }) {
         return true;
       }
     }
+    console.log(`Allow member : [${license}] But you are ${auth}`);
     return false;
   }
   const verified = id_verification(license);
