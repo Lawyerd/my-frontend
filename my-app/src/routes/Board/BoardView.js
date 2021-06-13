@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { Viewer } from "@toast-ui/react-editor";
 import { Card, Button, ButtonGroup } from "react-bootstrap";
@@ -6,18 +6,18 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import base_url from "../../data/base_url.js";
 
-function BoardView() {
+function BoardView(params) {
   const [cookies, setCookie] = useCookies(["post"]);
   const [isLoading, setIsLoading] = useState(true);
   const [content, setContent] = useState("");
-  const id = 1;
-  useEffect(async () => {
-    console.log(cookies.post);
-    setContent(cookies.post);
-    const res = await axios.get(base_url + "/post/" + id);
-    // console.log(res.data);
-    setContent(res.data.description);
+  const [title, setTitle] = useState("");
 
+  console.log();
+  useEffect(async () => {
+    const res = await axios.get(base_url + "/post/" + params.match.params.id);
+    // console.log(res.data);
+    setContent(res.data.content);
+    setTitle(res.data.title);
     // setContent(db_data);
     setIsLoading(false);
   }, []);
@@ -31,6 +31,9 @@ function BoardView() {
           "loading..."
         ) : (
           <div>
+            <div className="d-flex justify-content-center">
+              <h1 className="fw-bold">{title}</h1>
+            </div>
             <Viewer initialValue={content} />
 
             <div

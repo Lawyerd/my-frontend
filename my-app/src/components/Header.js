@@ -7,16 +7,12 @@ import logo from "../img/TIME_WHITE_.gif";
 import axios from "axios";
 import base_url from "../data/base_url.js";
 
-const REST_API_KEY = "c6252e6cd654811488e77d0e1dcfb696";
-const LOGOUT_REDIRECT_URI = "http://localhost:3000/oauth";
-const APP_ADMIN_KEY = "d1c5e406fa8041fc0d45a2597e9a1457";
-
 function Header() {
   const [cookies, removeCookie] = useCookies(["user"]);
   console.log(cookies);
   const handleClick = async () => {
     removeCookie("user");
-    const req = await axios({
+    await axios({
       //Promise 객체를 unlink에 넘겨주고
       method: "post",
       url: base_url + "/auth/kakao_logout",

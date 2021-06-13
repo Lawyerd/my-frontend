@@ -1,7 +1,6 @@
 import { Route, Switch } from "react-router-dom";
 
-import { Row, Col, Container } from "react-bootstrap";
-import Navigation from "../../components/Navigation.js";
+import { Row, Col } from "react-bootstrap";
 import Index from "./BoardIndex.js";
 import Write from "./BoardWrite";
 import View from "./BoardView";

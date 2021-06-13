@@ -11,25 +11,21 @@ import base_url from "../../data/base_url.js";
 
 function Board() {
   //   const [isLoading, setIsLoading] = useState(true);
-  const [postID, setPostID] = useState(0);
+  const [clicked_post, setClicked_post] = useState(0);
+  const [posts, setPosts] = useState();
   const columns = [
     // { name: "no", header: "ID" },
-    { name: "title", header: "Name" },
-    { name: "writer", header: "Writen By" },
-    { name: "reporting_time", header: "Reporting Time" },
-    { name: "views", header: "Views" },
+    { name: "section", header: "Section" },
+    { name: "title", header: "Title" },
+    { name: "author", header: "Written By" },
+    { name: "created", header: "Created" },
+    { name: "hit", header: "Views" },
     { name: "likes", header: "Likes" },
   ];
-  const posts = [
-    {
-      id: 1823,
-      title: "First Post",
-      writer: "Lawyerd",
-      reporting_time: "2021-06-11",
-      views: 110,
-      likes: 10,
-    },
-  ];
+  useEffect(async () => {
+    const res = await axios.get(base_url + "/post/all");
+    setPosts(res.data);
+  }, []);
 
   const handleClick = e => {
     // const clicked_cell = e.nativeEvent.target.innerText;
@@ -38,14 +34,13 @@ function Board() {
     // console.log(row_number);
     // console.log(e);
     if (row_number !== undefined) {
-      console.log(row_number);
-      console.log(posts[row_number]);
-      setPostID(posts[row_number].id);
+      console.log(`Redirect to ${posts[row_number]}`);
+      setClicked_post(posts[row_number].id);
       // setNext(users[row_number].id);
     }
   };
-  if (postID > 0) {
-    return <Redirect to={"/board/post/" + postID} />;
+  if (clicked_post > 0) {
+    return <Redirect to={"/board/post/" + clicked_post} />;
   }
   return (
     <Card>

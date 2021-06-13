@@ -2,6 +2,7 @@ var mysql = require("mysql");
 var util = require("util");
 const pbkdf2Password = require("pbkdf2-password");
 const hasher = pbkdf2Password();
+const moment = require("moment");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -106,62 +107,45 @@ user.find_by_email = async function (email) {
 
 post.create = async function (data) {
   console.log("trying to create new post");
-  // try {
-  //   await connection.query("Insert Into post Set ?", data);
-  //   console.log(`Create new post : ${data.id} in user DB`);
-  // } catch (e) {}
+  console.log(data);
+  let thisnow = moment();
+  created_time = thisnow.format("YYYY-MM-DD HH:mm:ss");
+  console.log(`created time is ${created_time}`);
+  data.created = created_time;
+  console.log(data);
+  try {
+    await connection.query("Insert Into post Set ?", data);
+    console.log(`Create new post : ${data.id} in post DB`);
+  } catch (e) {}
 };
 
 post.find_by_id = async function (post_id) {
   console.log("find_by_id");
-  const selected_post = {
-    id: 1823,
-    title: "First Post",
-    writer: "Lawyerd",
-    reporting_time: "2021-06-11",
-    description: "<h1>New Title</h1>\n",
-    views: 110,
-    likes: 10,
-  };
 
   let rows = [];
-  // try {
-  //   rows = await query(`select * from post where id = ${post_id}`);
-  //   console.log(`Find ${post_id}'st post from user DB`);
-  //   console.log(rows);
-  //   return rows;
-  //   // connection.end();
-  //   // console.log(rows);
-  // } catch (err) {
-  //   console.log(err);
-  //   return undefined;
-  // }
-  return selected_post;
+  try {
+    rows = await query(`select * from post where id = ${post_id}`);
+    console.log(`Find ${post_id}'st post from post DB`);
+    console.log(rows);
+    return rows[0];
+    // connection.end();
+    // console.log(rows);
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
 };
 
-post.get_all = async function () {
-  console.log("get_all");
-  const selected_posts = [
-    {
-      id: 1823,
-      title: "First Post",
-      writer: "Lawyerd",
-      reporting_time: "2021-06-11",
-      description: "<h1>New Title</h1>\n",
-      views: 110,
-      likes: 10,
-    },
-    {
-      id: 1825,
-      title: "Second Post",
-      writer: "MinGyeong",
-      reporting_time: "2021-06-11",
-      description: "<h1>New Title</h1>\n",
-      views: 110,
-      likes: 10,
-    },
-  ];
-  return selected_posts;
+post.find_all = async function () {
+  console.log("Getting all data...");
+  let rows = [];
+  try {
+    rows = await query(`select * from post`);
+    return rows;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
 };
 
 exports.db_user = user;
