@@ -12,6 +12,7 @@ import Oauth from "./Auth/Oauth.js";
 import NotFound from "./Auth/NotFound";
 import BoardRouter from "./Board/BoardRouter.js";
 import AdminRouter from "./Admin/AdminRouter.js";
+import Minutes from "./Minutes/MinutesRouter";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/signup" component={SignUp} />
           <Route path="/oauth" component={Oauth} />
           <Route path="/notfound" component={NotFound} />
+          <Route path="/minutes" component={Minutes} />
 
           <AuthRoute
             auth={["user", "user_kakao", "admin"]}
